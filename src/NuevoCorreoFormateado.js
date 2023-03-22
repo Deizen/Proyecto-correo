@@ -60,6 +60,12 @@ export class NuevoCorreo extends React.Component {
     });
   };
 
+handlenombreArchivoChange = (e) => {
+    this.setState({
+      nombreArchivo: e.target.value,
+    });
+  };
+
   handleCategoriaChange = (e) => {
     this.setState({
       categoria: e.target.value,  
@@ -273,7 +279,7 @@ roles.forEach(reg => {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              label="Aqui va el correo"
+              label="Aqui va cel orreo"
               margin="normal"
               onChange={this.handleCorreoChange}
               value={correo}
