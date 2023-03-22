@@ -45,7 +45,7 @@ export class NuevoCorreo extends React.Component {
       nombreArchivo: '',
       archivo: [],
       categorias: [],
-      data: [],
+      datos: [],
     };
     this.handleTituloChange = this.handleTituloChange.bind(this);
     this.handleCategoriaChange = this.handleCategoriaChange.bind(this);
@@ -55,12 +55,15 @@ export class NuevoCorreo extends React.Component {
     this.guardarCorreo = this.guardarCorreo.bind(this);
     this.guardarArchivo = this.guardarArchivo.bind(this);
     this.obtenerCategorias = this.obtenerCategorias.bind(this);
-    this.handlenombreArchivoChange = this.handlenombreArchivoChange.bind(this);
+    this.obtenerListado = this.obtenerListado.bind(this);
+    this.handleNombreArchivoChange = this.handleNombreArchivoChange.bind(this);
     this.handleSubirArchivoChange = this.handleSubirArchivoChange.bind(this);
+    this.handleListadoChange = this.handleListadoChange.bind(this);
   }
   
   componentWillMount() {
     this.obtenerCategorias();
+    this.obtenerListado();
   }
   obtenerCategorias = async (name) => {
     const unsub = onSnapshot(doc(db, "correosdb", "topics"), (doc) => {
@@ -70,14 +73,22 @@ export class NuevoCorreo extends React.Component {
         categorias.push(doc.data())
       }
     categorias.forEach(reg => {
-        console.log("reg", reg)
         reg.label = reg.name;
         reg.value = reg.name;
     });
 
     this.handleCategoriasChange(categorias)
+});
+  };
 
-    console.log("categorias", this.state.categorias)
+  obtenerListado = async (name) => {
+    const unsub = onSnapshot(doc(db, "correos", "data"), (doc) => {
+    const listado =[]
+      if(doc.data() != undefined){
+        listado.push(doc.data())
+      }
+
+    this.handleListadoChange(listado)
 });
   };
 
@@ -93,7 +104,7 @@ export class NuevoCorreo extends React.Component {
       stepper: stepper,
     });
   };
-  handlenombreArchivoChange = (e) => {
+  handleNombreArchivoChange = (e) => {
     this.setState({
       nombreArchivo: e,  
     });
@@ -123,7 +134,7 @@ export class NuevoCorreo extends React.Component {
 
   handleCategoriaChange = (e) => {
     this.setState({
-      categoria: e.target.value,  
+      categoria: e.value,  
     });
   };
   
@@ -139,8 +150,13 @@ export class NuevoCorreo extends React.Component {
     });
   };
 
+  handleListadoChange = (arrdatos) => {
+    this.setState({
+      datos: arrdatos,
+    });
+  };
+
   handleEnviarCorreoChange = (e) => {
-    console.log("handleEnviarCorreoChange", e.target.checked)
     this.setState({
       enviarCorreo: e.target.checked,  
     });
@@ -159,7 +175,6 @@ export class NuevoCorreo extends React.Component {
     ];
     
     let tipo = '';
-    console.log("que viene aqui", event)
     const {
       target: {
         files,
@@ -174,7 +189,6 @@ export class NuevoCorreo extends React.Component {
         tipo = tipo.toLowerCase();
         if(archivosValidos.includes(tipo.toLowerCase())){
           if(files[i].size > 5242880){
-           console.log("archivo muy grande")
           } else {
             band = true;
             formData.append('files',files[i]);
@@ -183,7 +197,6 @@ export class NuevoCorreo extends React.Component {
             this.handleNombreArchivoChange(files[i].name); 
           }
         } else {
-          console.log("archivo no valido")
         }
       }
       event.target.value = null;
@@ -213,26 +226,41 @@ export class NuevoCorreo extends React.Component {
   };
 
 
-
-  guardarCorreo = () => {
+  guardarCorreo = async () => {
     const { 
       titulo,
       categoria,
       correo,
       enviarCorreo,
-      archivo,
+      nombreArchivo,
       categorias,
+      datos,
     } = this.state
-    console.log("titulo", titulo)
-    console.log("categoria", categoria)
-    console.log("correo", correo)
-    console.log("enviarCorreo", enviarCorreo)
-    console.log("archivo", archivo)
 
     if(enviarCorreo){
       console.log("enviar correo") // guardar en bd y enviar correo
-    }else {
-      console.log("no enviar correo") // solo guardar en bd
+    }
+
+    try {
+      // preguntar si hay un archivo 
+      if(datos.length > 0){
+        const corrRef = doc(db, 'correos', 'data');
+        setDoc(corrRef, 
+          { titulo: titulo,
+            categoria: categoria,
+            nombreArchivo: nombreArchivo,
+            correo: correo, }, { merge: true });
+      } else {
+        await setDoc(doc(db, "correos","data"), {
+          titulo: titulo,
+          categoria: categoria,
+          nombreArchivo: nombreArchivo,
+          correo: correo, 
+        })
+      }
+      console.log("The topic successfully written!");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -310,15 +338,15 @@ export class NuevoCorreo extends React.Component {
       categorias,
       correo,
       enviarCorreo,
-      data,
       nombreArchivo,
       archivo,
       stepper,
+      datos,
     } = this.state
 
-    const { classes } = this.props;
-    console.log("categoria", categorias)
-const rows = [
+const { classes } = this.props;
+    
+const rows2 = [
   { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
   { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
@@ -326,24 +354,31 @@ const rows = [
   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
 ]
 
+const rows = []
+datos.forEach((item) => {
+
+  const obj = {
+    titulo: item.titulo,
+    categoria: 'categoria',
+    nombreArchivo: item.nombreArchivo,
+  }
+  rows.push(obj)
+})
+
 const columns = [
-  { name: 'id', label: 'ID' },
-  { name: 'firstName', label: 'First Name' },
-  { name: 'lastName', label: 'Last Name' },
-  { name: 'age', label: 'Age' },
+  { name: 'titulo', label: 'Titulo' },
+  { name: 'categoria', label: 'Categoria' },
+  { name: 'nombreArchivo', label: 'Archivo' },
 ];
 
-const roles = [
-  {IdRol: 1, Nombre: 'Rol 1'},
-  {IdRol: 2, Nombre: 'Rol 2'},
-  {IdRol: 3, Nombre: 'Rol 3'},
-]
+const opciones = {
+  download : false,
+  viewColumns : false,
+  print : false,
+  selectableRows: 'none',
+};
 
-roles.forEach(reg => {
-  reg.label = reg.Nombre;
-  reg.value = reg.IdRol;
-});
-console.log(stepper, "stepper")
+
 switch (stepper) {
   case 0 :
     return (
@@ -366,9 +401,10 @@ switch (stepper) {
         <MUIDataTable
           style={{padding: 8,paddingTop: 16}}
           elevation={0}
-          title={"Employee List"}
+          title={"Lista de correos"}
           data={rows}
           columns={columns}
+          options={opciones}
         ></MUIDataTable>
       </Paper>
     </Container>
@@ -404,11 +440,10 @@ switch (stepper) {
               <Grid item xs={12}>
                 <Select
                   label="Categoria"
-                  onChange={() => { } }
+                  onChange={this.handleCategoriaChange}
                   options={categorias}
                   onKeyDown={(event) => {
                     if (event.keyCode === 13 || event.keyCode === 9 || event.keyCode === 27) {
-                      console.log("agregar categoria");
                       this.guardarCategoria(event.target.value);
                     }
                   } }

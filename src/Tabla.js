@@ -66,7 +66,6 @@ class Tabla extends React.Component {
             selectableRows: 'none',
             search: false,
             onRowsDelete: (rowsDeleted) => {
-                console.log(rowsDeleted);
                 return false;
             }
         };
