@@ -4,6 +4,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import {db} from "./firebase";
 import { Paper, Container, Typography, Divider} from '@mui/material';
 import {NuevoCorreo} from './NuevoCorreo';
+// import {NuevoCorreo} from './NuevoCorreoFormateado';
+
 import Tabla from './Tabla';
 import MUIDataTable from 'mui-datatables';
 
@@ -59,30 +61,12 @@ roles.forEach(reg => {
 function App() {
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-          <button
-          onClick={funcion}
-          >
-            Agregar
-          </button>
-      </header> */}
-      <Container maxWidth={'xl'}>
+      <Container maxWidth={'xl'} style={{padding: 8}}>
         <Paper elevation={3} >
-          <Typography variant='h2'>Newsletter App</Typography>
+          <Typography variant='h2' > Newsletter App </Typography>
           <Divider></Divider>
           <MUIDataTable
+            style={{padding: 8}}
             elevation={0}
             title={"Employee List"}
             data={rows}
@@ -90,7 +74,6 @@ function App() {
           ></MUIDataTable>
         </Paper>
       </Container>
-      <Tabla/>
       <NuevoCorreo/>
     </div>
   );

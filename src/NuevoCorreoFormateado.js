@@ -2,7 +2,7 @@ import React from 'react';
 import T from 'prop-types';
 import {Paper, Container, Typography, Divider,TextField,Grid,Switch,FormControlLabel,Button,Chip,Tooltip} from '@mui/material';
 import Select from 'react-select';
-import { doc, getDoc, setDoc,onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import {db} from "./firebase";
 import MUIDataTable from 'mui-datatables';
 import Archivo from '@mui/icons-material/Attachment';
@@ -46,18 +46,7 @@ export class NuevoCorreo extends React.Component {
     this.guardarCategoria = this.guardarCategoria.bind(this);
     this.guardarCorreo = this.guardarCorreo.bind(this);
     this.guardarArchivo = this.guardarArchivo.bind(this);
-    this.obtenerCategorias = this.obtenerCategorias.bind(this);
   }
-  
-  componentWillMount() {
-    this.obtenerCategorias();
-  }
-  obtenerCategorias = async (name) => {
-    const unsub = onSnapshot(doc(db, "topics", "1"), (doc) => {
-    console.log("Current data: ", doc.data());
-});
-  };
-
 
   handleTituloChange = (e) => {
     this.setState({
@@ -76,7 +65,14 @@ export class NuevoCorreo extends React.Component {
       categoria: e.target.value,  
     });
   };
-  
+
+  // handleChangeArchivo = (arc) => {
+  //   this.setState({
+  //     archivo: arc,
+  //   });
+  // };
+
+
   handleCorreoChange = (e) => {
     this.setState({
       correo: e.target.value,  
@@ -132,7 +128,11 @@ export class NuevoCorreo extends React.Component {
 
   };
 
-  
+  // handleDataChange = (e) => {
+  //   this.setState({
+  //     data: e.target.value,  
+  //   });
+  // }
    guardarCategoria = async (name) => {
     try {
       await setDoc(doc(db, "correosdb","topics"), {
@@ -161,77 +161,11 @@ export class NuevoCorreo extends React.Component {
     console.log("archivo", archivo)
 
     if(enviarCorreo){
-      console.log("enviar correo") // guardar en bd y enviar correo
+      console.log("enviar correo")
     }else {
-      console.log("no enviar correo") // solo guardar en bd
+      console.log("no enviar correo")
     }
   };
-
-  // mandarCorreo = async () => {
-  //   const { 
-  //     titulo,
-  //     categoria,
-  //     correo,
-  //     enviarCorreo,
-  //     archivo,
-  //   } = this.state
-
-
-  //   const transporter = nodemailer.createTransport({
-  //       service: "gmail",
-  //       auth: {
-  //           user: "eddieisaac@gmail.com",
-  //           pass: "xqokqxqujiqtuqfs",
-  //       },
-  //   });
-  //   const html = await promisify(fs.readFile)('./app/assets/email.html');
-
-  //   console.log(html)
-
-
-  //   const template = handlebars.compile(html);
-
-  //   // for await (const user of users) {
-  //       // data for template with unsubscribe link to topic
-  //       let data = {
-  //           unsubscribe_url: `http://localhost:3000/#/topic/unsubscribe`,
-  //       }
-
-  //       let htmlToSend = template(data);
-
-  //       const mailOptions = {
-  //           from: '"Isaac" <deizen16@gmail.com>"',
-  //           to: user.email,
-  //           subject: newsletter.title,
-  //           text: "Probando",
-  //           html: htmlToSend,
-  //           attachments: [
-  //               {
-  //                   filename: newsletter.content_url.split("/").pop(),
-  //                   path: newsletter.content_url,
-  //               },
-  //           ],
-  //       };
-
-  //       transporter.sendMail(mailOptions, function (error, info) {
-  //           if (error) {
-  //               console.log(error);
-  //           } else {
-  //               console.log("Email sent: " + info.response);
-  //           }
-  //       });
-  //   // }
-
-  //   // update status to sent
-  //   // db.newsletter.update({
-  //   //     status: 'sent',
-  //   // },{
-  //   //     where: {
-  //   //         id: id,
-  //   //     }
-  //   // });
-  // };
-
 
   render() {
     const { 
@@ -274,79 +208,87 @@ roles.forEach(reg => {
   reg.value = reg.IdRol;
 });
 
-return (
-  <Container maxWidth={'xl'}>
-    <Paper elevation={3} style={{ padding: '2rem' }}>
-      <Typography variant='h2' style={{ marginBottom: '2rem' }}>
-        Nuevo correo
-      </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <TextField
-            label="Titulo"
-            margin="normal"
-            onChange={this.handleTituloChange}
-            value={titulo}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Select
-            label="Categoria"
-            onChange={() => {}}
-            options={roles}
-            onKeyDown={(event) => { 
-              if (event.keyCode === 13 || event.keyCode === 9 || event.keyCode === 27) {
-                console.log("agregar categoria")
-                this.guardarCategoria(event.target.value)
-              }
-            }}
-            isSearchable
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Correo"
-            margin="normal"
-            onChange={this.handleCorreoChange}
-            value={correo}
-            placeholder="Correo delimitado por comas"
-            fullWidth
-          />
-        </Grid>
-        <Grid item container xs={12}>
-        <Grid item xs={12} md={6}>
-          {archivo.length > 0 ? (
+    return (
+      <Container maxWidth={'xl'}>
+      <Paper elevation={3} className={classes.paper}>
+        <Typography variant='h2'>Nuevo correo</Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              label="Titulo"
+              margin="normal"
+              onChange={this.handleTituloChange}
+              value={titulo}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Select
+              value={''}
+              onChange={() => {}}
+              options={roles}
+              // isMulti={multiple}
+              //disabled={inhabilitado}
+              // error={campoValido}
+              // aqui se le agregara un key down que agregara la categoria? 
+              onKeyDown={event => { 
+                if (event.keyCode === 13 || event.keyCode === 9 || event.keyCode === 27) {
+                  console.log("agregar categoria")
+                  this.guardarCategoria(event.target.value)
+                }
+              }}
+              isSearchable
+              placeholder='placeholder'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {archivo.length > 0 ?
               <div>
-                <Tooltip title={nombreArchivo}>
+                <Tooltip 
+                  title = {nombreArchivo}
+                >
                   <Chip
-                    icon={<Archivo />}
-                    label={nombreArchivo.substring(0, 40)}
-                    style={{ fontSize: '1em', marginRight: 8 }}
+                    icon={<Archivo/>}
+                    label={nombreArchivo.substring(0,40)}
+                    style={{fontSize: '1em', marginRight: 8}}
                   />
                 </Tooltip>
               </div>
-            ) : (
+              :
               <div>
                 <input
                   accept="application/pdf,image/png"
-                  style={{ display: 'none' }}
+                  style={{display: 'none'}}
                   id={'subirArchivo'}
                   onChange={this.guardarArchivo}
                   type="file"
                 />
                 <label htmlFor={'subirArchivo'}>
-                  <SubirArchivoIcon style={{ cursor: 'pointer',paddingTop: 20 }} />
+                  <SubirArchivoIcon
+                    style={{cursor: 'pointer'}} 
+                  />
                 </label>
               </div>
-            )}
+            }
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
+            <TextField
+              label="Aqui va el correo"
+              margin="normal"
+              onChange={this.handleCorreoChange}
+              value={correo}
+              placeholder="Correo delimitado por comas"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
             <FormControlLabel
-              style={{ margin: 0 }}
+              style={{margin: 0}}
               control={
                 <Switch
-                  onChange={this.handleEnviarCorreoChange}
+                  onChange={this.handleEnviarCorreoChange }
+                  // onChange={this.handleEnviarCorreoChange}
+                  // value={almacen.valor}
                   checked={enviarCorreo}
                 />
               }
@@ -354,35 +296,39 @@ return (
               label="Enviar correo"
             />
           </Grid>
-        </Grid>
-        <Grid item container xs={12} justify="flex-end" spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Button
-              variant="outlined"
-              color="primary"
-              name="btnEliminar"
-              onClick={() => {}}
-              fullWidth
-            > 
-              Cerrar
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              name="btnGuardar"
-              onClick={this.guardarCorreo}
-              fullWidth
-            >
-              Guardar
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Paper>
-  </Container>
-);
+          <Grid item container xs={12} justify="flex-end" spacing={3}>
+            <Grid item sm={12} md={6} justify="center">
+              <Button
+                color="primary"
+                name="btnEliminar"
+                onClick={() => {}}
+                fullWidth
+              > 
+                Cerrar
+              </Button>
+            </Grid>
+                <Grid
+                  container
+                  item
+                  sm={12}
+                  md={6}
+                  justify="center"
+                >
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    name="btnGuardar"
+                    onClick={this.guardarCorreo}
+                    fullWidth
+                  >
+                    Guardar
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+        </Paper>
+      </Container>
+    );
   }
 }
 
