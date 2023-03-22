@@ -2,7 +2,7 @@ import React from 'react';
 import T from 'prop-types';
 import {Paper, Container, Typography, Divider,TextField,Grid,Switch,FormControlLabel,Button,Chip,Tooltip,IconButton,Toolbar,AppBar} from '@mui/material';
 import Select from 'react-select';
-import { doc, getDoc, setDoc,onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc,onSnapshot, collection, addDoc,getDocs,query } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import {db} from "./firebase";
 import MUIDataTable from 'mui-datatables';
@@ -12,7 +12,7 @@ import AgregarIcon from '@mui/icons-material/AddBoxOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import grey from '@mui/material/colors/grey';
 import { withStyles } from '@material-ui/styles';
-
+import { v4 as uuid } from 'uuid';
 
 const styles = (theme) => ({
   paper: {
@@ -31,7 +31,6 @@ const styles = (theme) => ({
   },
 });
 // usar tabla normal de material ui
-
 
 export class NuevoCorreo extends React.Component {
   constructor(props) {
@@ -65,20 +64,23 @@ export class NuevoCorreo extends React.Component {
     this.obtenerCategorias();
     this.obtenerListado();
   }
-  obtenerCategorias = async (name) => {
-    const unsub = onSnapshot(doc(db, "correosdb", "topics"), (doc) => {
-    console.log("Current data: ", doc.data());
-    const categorias =[]
-      if(doc.data() != undefined){
-        categorias.push(doc.data())
+
+  obtenerCategorias = async (name) => {       
+    const categorias =[] 
+    const vcatg = collection(db, "Categoria");
+    const q = query(collection(db, "Categoria"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data().name);
+      const obj = {
+        label: doc.data().name,
+        value: doc.id,
       }
-    categorias.forEach(reg => {
-        reg.label = reg.name;
-        reg.value = reg.name;
+      categorias.push(obj)
     });
 
     this.handleCategoriasChange(categorias)
-});
   };
 
   obtenerListado = async (name) => {
@@ -201,30 +203,23 @@ export class NuevoCorreo extends React.Component {
       }
       event.target.value = null;
     }
-
   };
 
   
    guardarCategoria = async (name) => {
-    const { 
-      categorias,
-    } = this.state
-    try {
-      // preguntar si hay un archivo 
-      if(categorias.length > 0){
-        const cityRef = doc(db, 'correosdb', 'topics');
-        setDoc(cityRef, { name: name }, { merge: true });
-      } else {
-        await setDoc(doc(db, "correosdb","topics"), {
+    const unique_id = uuid();
+    
+    try {       
+        await addDoc(collection(db, "Categoria"), {
           name: name,
-        })
-      }
+        });
+        console.log('entro catyegoria')
       console.log("The topic successfully written!");
     } catch (error) {
       console.log(error);
     }
   };
-
+ 
 
   guardarCorreo = async () => {
     const { 
@@ -237,27 +232,20 @@ export class NuevoCorreo extends React.Component {
       datos,
     } = this.state
 
+    const unique_id = uuid();
+
     if(enviarCorreo){
       console.log("enviar correo") // guardar en bd y enviar correo
     }
 
     try {
       // preguntar si hay un archivo 
-      if(datos.length > 0){
-        const corrRef = doc(db, 'correos', 'data');
-        setDoc(corrRef, 
-          { titulo: titulo,
-            categoria: categoria,
-            nombreArchivo: nombreArchivo,
-            correo: correo, }, { merge: true });
-      } else {
-        await setDoc(doc(db, "correos","data"), {
+        await setDoc(doc(db, "correos",unique_id), {
           titulo: titulo,
           categoria: categoria,
           nombreArchivo: nombreArchivo,
           correo: correo, 
         })
-      }
       console.log("The topic successfully written!");
     } catch (error) {
       console.log(error);
@@ -345,18 +333,9 @@ export class NuevoCorreo extends React.Component {
     } = this.state
 
 const { classes } = this.props;
-    
-const rows2 = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-]
 
 const rows = []
 datos.forEach((item) => {
-
   const obj = {
     titulo: item.titulo,
     categoria: 'categoria',
@@ -382,9 +361,9 @@ const opciones = {
 switch (stepper) {
   case 0 :
     return (
-      <Container maxWidth={'xl'} style={{padding: 8}}>
+      <Container maxWidth={'md'} style={{padding: 8}}>
       <Paper elevation={3} style={{ padding: '2rem' }}>
-        <Typography variant='h2' > Newsletter App </Typography>
+        <Typography variant='h2' > App de Boletines </Typography>
         <Tooltip title=" New Newsletter ">
               <IconButton 
                 edge="end" 
@@ -411,7 +390,7 @@ switch (stepper) {
     );
   case 1 :
     return (
-      <Container maxWidth={'xl'}>
+      <Container maxWidth={'md'}>
           <Paper elevation={3} style={{ padding: '2rem' }}>
           <Grid item container xs={12} justify="center" spacing={3}>
                 <Grid item xs={12} md={2}>
