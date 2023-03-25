@@ -4,32 +4,37 @@ import {Paper, Container, Typography, Divider,TextField,Grid,Switch,FormControlL
 import Select from 'react-select';
 import { doc, getDoc, setDoc,onSnapshot, collection, addDoc,getDocs,query } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-import {db} from "./firebase";
+import { httpsCallable } from 'firebase/functions';
+import {db, functions} from "./firebase";
 import MUIDataTable from 'mui-datatables';
 import Archivo from '@mui/icons-material/Attachment';
 import SubirArchivoIcon from '@mui/icons-material/CloudUploadOutlined';
 import AgregarIcon from '@mui/icons-material/AddBoxOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import grey from '@mui/material/colors/grey';
-import { withStyles } from '@material-ui/styles';
+import { SnackbarProvider,enqueueSnackbar } from 'notistack';
 import { v4 as uuid } from 'uuid';
 
-const styles = (theme) => ({
-  paper: {
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4),
-  },
-  title: {
-    marginBottom: theme.spacing(2),
-  },
-  inputFile: {
-    display: 'none',
-  },
-  uploadButton: {
-    cursor: 'pointer',
-  },
-});
+
+function sendEmailWithAttachment() {
+  const to = "eddieisaac@gmail.com";
+  const subject = "Prueba de correo";
+  const body = "Prueba de correo";
+  const attachmentPath = ""
+
+
+  const callSendEmail = httpsCallable(functions, 'sendEmail');
+
+
+  callSendEmail({to, subject, body, attachmentPath})
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+}
+
 // usar tabla normal de material ui
 
 export class NuevoCorreo extends React.Component {
@@ -45,6 +50,7 @@ export class NuevoCorreo extends React.Component {
       archivo: [],
       categorias: [],
       datos: [],
+      fileUrl: '',
     };
     this.handleTituloChange = this.handleTituloChange.bind(this);
     this.handleCategoriaChange = this.handleCategoriaChange.bind(this);
@@ -58,8 +64,12 @@ export class NuevoCorreo extends React.Component {
     this.handleNombreArchivoChange = this.handleNombreArchivoChange.bind(this);
     this.handleSubirArchivoChange = this.handleSubirArchivoChange.bind(this);
     this.handleListadoChange = this.handleListadoChange.bind(this);
+    this.notificacion = this.notificacion.bind(this);
   }
   
+  // que show sigues en juntiza?, ya llego tu comida? junta con el chino y el de la pizza
+  // che chino al rato agarrado de la mano contigo andara
+
   componentWillMount() {
     this.obtenerCategorias();
     this.obtenerListado();
@@ -94,6 +104,14 @@ export class NuevoCorreo extends React.Component {
 });
   };
 
+  notificacion = (mensaje) => {
+    enqueueSnackbar(mensaje, {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'right'
+      }
+    })
+  };
 
   handleTituloChange = (e) => {
     this.setState({
@@ -118,21 +136,21 @@ export class NuevoCorreo extends React.Component {
     });
   };
 
+ 
   handleSubirArchivoChange = async (nombre,archivo) => {
     try {
       const storage = getStorage();
-      const storageRef = ref(storage, 'some-child');
-
+      const storageRef = ref(storage, `/files/${nombre}`);
       // 'file' comes from the Blob or File API
       uploadBytes(storageRef, archivo).then((snapshot) => {
-        console.log('Uploaded a blob or file!');
+        this.notificacion("The file has been uploaded successfully")  
+         return snapshot.ref.fullPath;
       });
-
-      console.log("The file has been uploaded successfully");
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   handleCategoriaChange = (e) => {
     this.setState({
@@ -195,7 +213,10 @@ export class NuevoCorreo extends React.Component {
             band = true;
             formData.append('files',files[i]);
             archivo.push(files[i]);
-            this.handleSubirArchivoChange(files[i].name,files[i]);
+            // esta URL la mandas a la base de datos
+            // tons le movere para llegar a ee punto y el del acomodo del proyecto tmb comere :D sale w provecho
+            this.fileUrl = this.handleSubirArchivoChange(files[i].name,files[i]);
+            console.log(this.fileUrl, 'fileUrl' )
             this.handleNombreArchivoChange(files[i].name); 
           }
         } else {
@@ -252,72 +273,6 @@ export class NuevoCorreo extends React.Component {
     }
   };
 
-  // mandarCorreo = async () => {
-  //   const { 
-  //     titulo,
-  //     categoria,
-  //     correo,
-  //     enviarCorreo,
-  //     archivo,
-  //   } = this.state
-
-
-  //   const transporter = nodemailer.createTransport({
-  //       service: "gmail",
-  //       auth: {
-  //           user: "eddieisaac@gmail.com",
-  //           pass: "xqokqxqujiqtuqfs",
-  //       },
-  //   });
-  //   const html = await promisify(fs.readFile)('./app/assets/email.html');
-
-  //   console.log(html)
-
-
-  //   const template = handlebars.compile(html);
-
-  //   // for await (const user of users) {
-  //       // data for template with unsubscribe link to topic
-  //       let data = {
-  //           unsubscribe_url: `http://localhost:3000/#/topic/unsubscribe`,
-  //       }
-
-  //       let htmlToSend = template(data);
-
-  //       const mailOptions = {
-  //           from: '"Isaac" <deizen16@gmail.com>"',
-  //           to: user.email,
-  //           subject: newsletter.title,
-  //           text: "Probando",
-  //           html: htmlToSend,
-  //           attachments: [
-  //               {
-  //                   filename: newsletter.content_url.split("/").pop(),
-  //                   path: newsletter.content_url,
-  //               },
-  //           ],
-  //       };
-
-  //       transporter.sendMail(mailOptions, function (error, info) {
-  //           if (error) {
-  //               console.log(error);
-  //           } else {
-  //               console.log("Email sent: " + info.response);
-  //           }
-  //       });
-  //   // }
-
-  //   // update status to sent
-  //   // db.newsletter.update({
-  //   //     status: 'sent',
-  //   // },{
-  //   //     where: {
-  //   //         id: id,
-  //   //     }
-  //   // });
-  // };
-
-
   render() {
 
     const { 
@@ -331,6 +286,10 @@ export class NuevoCorreo extends React.Component {
       stepper,
       datos,
     } = this.state
+
+    const { valor } = this.props;
+    console.log('Los pros: ', this.props)
+    console.log('El valor a la lauz es: ', valor)
 
 const { classes } = this.props;
 
@@ -357,6 +316,7 @@ const opciones = {
   selectableRows: 'none',
 };
 
+categorias.sort((a, b) => a.label.localeCompare(b.label));
 
 switch (stepper) {
   case 0 :
@@ -489,7 +449,7 @@ switch (stepper) {
                     variant="contained"
                     color="primary"
                     name="btnGuardar"
-                    onClick={this.guardarCorreo}
+                    onClick={sendEmailWithAttachment}
                     fullWidth
                   >
                     Guardar
