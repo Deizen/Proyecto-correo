@@ -12,7 +12,9 @@ import MUIDataTable from 'mui-datatables';
 function App() {
   return (
     <div className="App">
-      <NuevoCorreo />
+      <NuevoCorreo 
+        valor = {0}
+      />
     </div>
   );
 }
