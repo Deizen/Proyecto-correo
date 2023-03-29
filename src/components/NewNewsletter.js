@@ -33,7 +33,6 @@ export class NewNewsletter  extends Component{
             handleTitleChange, 
             handleCategoryChange, 
             handleEmailChange, 
-            saveCategoryName, 
             saveCategoryDB, 
             saveNewsletter, 
             saveAtachment, 

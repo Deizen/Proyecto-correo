@@ -1,14 +1,12 @@
 import React from 'react';
 import T from 'prop-types';
 import { collection, addDoc,getDocs,query,where,updateDoc,doc } from "firebase/firestore";
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { httpsCallable } from 'firebase/functions';
 import {db, functions} from "../firebase";
-import { SnackbarProvider,enqueueSnackbar } from 'notistack';
+import { enqueueSnackbar } from 'notistack';
 import NewsLetterList from '../components/NewsLetterList';
 import NewNewsletter from '../components/NewNewsletter';
-import ReactDOMServer from 'react-dom/server';
 
 
 // aqui hacer las consultas a firebase
@@ -265,7 +263,6 @@ export class NewsletterPage extends React.Component {
       },
     } = event;
 
-    let band = false;
 
     if(files.length > 0){
       for(let i = 0; i < files.length; i+=1){
@@ -275,7 +272,6 @@ export class NewsletterPage extends React.Component {
           if(files[i].size > 5242880){
             this.notification('The file size is not valid');
           } else {
-            band = true;
             formData.append('files',files[i]);
             attachment.push(files[i]);
             await this.saveAtachmentDB(files[i].name,files[i]);

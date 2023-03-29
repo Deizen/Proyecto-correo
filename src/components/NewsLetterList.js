@@ -9,9 +9,9 @@ import SendIcon from '@mui/icons-material/SendOutlined';
 
 // usar tabla normal de material ui
 export class NewsLetterList  extends Component{
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     
   render() {
     const {

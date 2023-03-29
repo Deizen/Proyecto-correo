@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Container,Grid, Button } from '@mui/material';
-import { doc, updateDoc, collection, query, where, getDoc } from "firebase/firestore";
-import {db, functions} from "../firebase";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import {db} from "../firebase";
 
 
 // create function recibe params for url category and userId
