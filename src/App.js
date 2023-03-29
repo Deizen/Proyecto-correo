@@ -1,18 +1,14 @@
-import logo from './logo.svg';
 import './App.css';
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import {db} from "./firebase";
-import { Paper, Container, Typography, Divider} from '@mui/material';
-import {NuevoCorreo} from './NuevoCorreo';
-// import {NuevoCorreo} from './NuevoCorreoFormateado';
-
-import Tabla from './Tabla';
-import MUIDataTable from 'mui-datatables';
+import NewsletterPage from './containers/NewsletterPage';
 
 function App() {
   return (
     <div className="App">
+<<<<<<< Updated upstream
       <NuevoCorreo />
+=======
+      <NewsletterPage />
+>>>>>>> Stashed changes
     </div>
   );
 }
