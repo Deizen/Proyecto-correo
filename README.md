@@ -6,10 +6,10 @@ para crear la interfaz de usuario y se integra con Firebase para gestionar y alm
 Además, se utiliza el paquete nodemailer para enviar correos electrónicos. El paquete nodemailer se configura para enviar correos electrónicos con un asunto, texto y archivo adjunto especificados en el formulario.
 
 # Tecnologias usadas
-> ReactJs 18
-> Firebase
-> NodeJS
-< Nodemailer 
+* ReactJs 18
+* Firebase
+* NodeJS
+* Nodemailer 
 
 
 # Instalación
