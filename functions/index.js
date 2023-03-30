@@ -29,7 +29,7 @@ exports.sendEmail = functions.https.onCall(async (data, context) => {
       content: fileContents,
     }],
   };
-
+  
   // send email
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {

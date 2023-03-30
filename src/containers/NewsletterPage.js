@@ -57,21 +57,7 @@ export class NewsletterPage extends React.Component {
       this.getListNewsLetter = this.getListNewsLetter.bind(this);
       this.notification = this.notification.bind(this);
       this.sendEmailList = this.sendEmailList.bind(this);
-      this.saveCategoryName = this.saveCategoryName.bind(this);
-      
-
-      // this.handleTituloChange = this.handleTituloChange.bind(this);
-      // this.handleCategoriaChange = this.handleCategoriaChange.bind(this);
-      // this.handleCorreoChange = this.handleCorreoChange.bind(this);
-      // this.guardarCategoria = this.guardarCategoria.bind(this);
-      // this.guardarCorreo = this.guardarCorreo.bind(this); -> saveNewsletter
-      // this.guardarArchivo = this.guardarArchivo.bind(this);
-      // this.obtenerCategorias = this.obtenerCategorias.bind(this);
-      // this.obtenerListado = this.obtenerListado.bind(this);
-      // this.handleNombreArchivoChange = this.handleNombreArchivoChange.bind(this);
-      // this.handleSubirArchivoChange = this.handleSubirArchivoChange.bind(this); saveAtachmentDB
-      // this.handleListadoChange = this.handleListadoChange.bind(this);
-      
+      this.saveCategoryName = this.saveCategoryName.bind(this);  
   }
 
 

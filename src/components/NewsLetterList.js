@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import T from 'prop-types';
 import {Paper, Container, Typography, Divider,Tooltip,IconButton} from '@mui/material';
 import MUIDataTable from 'mui-datatables';
-import AgregarIcon from '@mui/icons-material/AddBoxOutlined';
+import AddIcon from '@mui/icons-material/AddBoxOutlined';
 import { SnackbarProvider} from 'notistack';
 import SendIcon from '@mui/icons-material/SendOutlined';
 
@@ -92,7 +92,7 @@ return (
               onClick={() => handleStepperChange(1)}
               style={{width:'2em', height:'2em',marginTop:'10px'}}
             >
-              <AgregarIcon
+              <AddIcon
                 style={{color: '#28950F',width:'2em', height:'2em'}}
               />
             </IconButton>

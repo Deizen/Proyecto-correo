@@ -85,13 +85,14 @@ return (
                         />
                     </div>
                 </Grid>
-                <Grid item xs={12} md={1}>
+                <Grid item xs={12} md={1} 
+                >
                     <Tooltip title="New Category" placement="bottom-end"> 
-                        <IconButton 
+                        <IconButton style={{marginTop: '-4px'}}
                                 onClick={() => this.setState({ open: true})}
                             >
                             <AddIcon 
-                                style={{ color: 'green' }}
+                                style={{ color: 'green', width: '32px', height: '32px' }}
                             />
                         </IconButton>
                     </Tooltip>
