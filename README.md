@@ -1,7 +1,9 @@
 # Proyecto-Correo
-Este componente de React es un formulario para enviar correos electrónicos. Los usuarios pueden seleccionar una categoría, agregar archivos adjuntos y hacer un seguimiento de los correos electrónicos enviados.
+Es un formulario para enviar correos electrónicos
 
-para crear la interfaz de usuario y se integra con Firebase para gestionar y almacenar datos. El código incluye manejadores de eventos para cambios de entrada, funciones para interactuar con Firestore y Storage de Firebase, y métodos para manejar notificaciones.
+Los usuarios pueden seleccionar una categoría, agregar archivos adjuntos y hacer un seguimiento de los correos electrónicos enviados.
+
+Para crear la interfaz de usuario y se integra con Firebase para gestionar y almacenar datos. El código incluye manejadores de eventos para cambios de entrada, funciones para interactuar con Firestore y Storage de Firebase, y métodos para manejar notificaciones.
 
 Además, se utiliza el paquete nodemailer para enviar correos electrónicos. El paquete nodemailer se configura para enviar correos electrónicos con un asunto, texto y archivo adjunto especificados en el formulario.
 
