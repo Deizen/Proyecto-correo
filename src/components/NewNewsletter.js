@@ -6,7 +6,7 @@ import Archivo from '@mui/icons-material/Attachment';
 import SubirArchivoIcon from '@mui/icons-material/CloudUploadOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { SnackbarProvider} from 'notistack';
-import SaveIcon from '@mui/icons-material/Save';
+import AddIcon from '@mui/icons-material/AddBoxOutlined';
 import Modal from './CustomModal';
 
 
@@ -86,11 +86,11 @@ return (
                     </div>
                 </Grid>
                 <Grid item xs={12} md={1}>
-                    <Tooltip title="Save Category" placement="bottom-end"> 
+                    <Tooltip title="New Category" placement="bottom-end"> 
                         <IconButton 
                                 onClick={() => this.setState({ open: true})}
                             >
-                            <SaveIcon 
+                            <AddIcon 
                                 style={{ color: 'green' }}
                             />
                         </IconButton>

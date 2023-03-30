@@ -137,8 +137,6 @@ export class NewsletterPage extends React.Component {
     const querySnapshot = await getDocs(q);    
 
     querySnapshot.forEach((doc) => {
-        //https://correos-dc3de.web.app/
-        //http://localhost:3000
         
         const unsubscribeLink = `https://correos-dc3de.web.app/unsubscribe/${category.value}/${doc.id}`;
         const msjBody = `Dear Subscriber,
@@ -364,7 +362,7 @@ export class NewsletterPage extends React.Component {
             console.error("Error adding document: ", e);
         }
 
-            const unsubscribeLink = `http://localhost:3000/unsubscribe/${category}/${userSubscribeID}`;
+            const unsubscribeLink = `https://correos-dc3de.web.app/unsubscribe/${category}/${userSubscribeID}`;
             const msjBody = `Dear Subscriber,
 
             We have received your request to unsubscribe from our newsletter, which is categorized under ${categoryName.label}. We are sorry to see you go, but we understand that your time and attention are valuable.
