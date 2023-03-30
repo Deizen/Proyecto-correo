@@ -17,3 +17,8 @@ Además, se utiliza el paquete nodemailer para enviar correos electrónicos. El 
 2. Ejecute npm install para instalar las dependencias del proyecto. 
 3. Ejecute npm start para iniciar la aplicación.
 4. Abre el navedor con la siguiente liga http://localhost:3000
+
+# Vista Previa
+![](images/Mail List.png)
+![](images/Desuscribed.png)
+![](images/New mail.png)
