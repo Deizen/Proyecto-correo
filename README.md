@@ -19,6 +19,6 @@ Además, se utiliza el paquete nodemailer para enviar correos electrónicos. El 
 4. Abre el navedor con la siguiente liga http://localhost:3000
 
 # Vista Previa
-![](images/Mail List.png)
-![](images/Desuscribed.png)
-![](images/New mail.png)
+![](imagenes/Mail List.png)
+![](imagenes/Desuscribed.png)
+![](imagenes/New mail.png)
